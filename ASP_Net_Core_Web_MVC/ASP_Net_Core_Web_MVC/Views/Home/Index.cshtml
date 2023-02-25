@@ -5,40 +5,20 @@
 }
 
 <style>
-    table thead tr th{
+    table thead tr th {
         text-align: center;
-    }
-    .cen{
-        text-align: center;
-    }
-    div#tablehome_filter.dataTables_filter{
-        display:none;
     }
 
+    .cen {
+        text-align: center;
+    }
+
+    div#tablehome_filter.dataTables_filter {
+        display: none;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-@*<div class="d-flex mb-4">
-    <div class="mr-auto">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-plus"></i>
-            Ticket
-        </button>
-    </div>
-    <div>
-        <label class="col-form-label">Status :</label>
-    </div>
-    <div>
-        <select id="categoryFilter" class="form-control">
-            <option value="">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Accepted">Accepted</option>
-            <option value="Resolved">Resolved</option>
-            <option value="Rejected">Rejected</option>
-        </select>
-    </div>
-</div>*@
 
 <div class="form-group row dataTables_filter">
     <label class="col-1 col-form-label">Status :</label>
@@ -71,6 +51,7 @@
             <th>Create</th>
             <th>Last Update</th>
             <th>Edit</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -86,8 +67,8 @@
                     <td class="cen">@item.Status</td>
                     <td class="cen">@item.CreateTimestamp</td>
                     <td class="cen">@item.LastUpdateTimestamp</td>
-                    @*<td class="cen"><a asp-route-id="@item.ID" asp-area="" asp-controller="Update" asp-action="Index">Update</a></td>*@
                     <td class="cen"><button type="button" class="btn btn-primary" onclick="SendId(@item.ID)" data-toggle="modal" data-target="#modaleditticket"><span><i class="fa fa-edit"></i></span>&nbsp;Edit</button></td>
+                    <td class="cen"><a class="btn btn-primary" asp-area="" asp-controller="Home" asp-route-id="@item.ID" asp-action="DeleteData" onclick="javascript: return ConfirmDelete()"><span><i class="fa fa-trash"></i></span>&nbsp;Delete</a></td>
                 </tr>
                 i++;
             }
@@ -122,8 +103,6 @@
                         <label>Information<span style="color:red">*</span></label>
                         <textarea class="form-control" id="txt_information" name="information" rows="3" required></textarea>
                     </div>
-                    @*<button type="submit" class="btn btn-primary">Save</button>
-                    <button type="submit" class="btn btn-light" asp-area="" asp-controller="Home" asp-action="Index">Cancel</button>*@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -145,7 +124,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="edithideid" name="editid"/>
+                    <input type="hidden" id="edithideid" name="editid" />
                     <div class="form-group">
                         <label>Title<span style="color:red">*</span></label>
                         <input type="text" class="form-control" id="txt_edittitle" name="edittitle" readonly required>
@@ -171,8 +150,6 @@
                             <option value="Rejected">Rejected</option>
                         </select>
                     </div>
-                    @*<button type="submit" class="btn btn-primary">Save</button>
-                        <button type="submit" class="btn btn-light" asp-area="" asp-controller="Home" asp-action="Index">Cancel</button>*@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -190,7 +167,7 @@
 
     <script type="text/javascript">
         async function SendId(id) {
-            let response = await fetch("https://localhost:44339/DataTicket/"+id);
+            let response = await fetch("https://localhost:44339/DataTicket/" + id);
             let data = await response.json();
             document.getElementById("edithideid").value = data.id;
             document.getElementById("txt_edittitle").value = data.title;
@@ -206,6 +183,15 @@
             document.getElementById("txt_description").value = "";
             document.getElementById("txt_contact").value = "";
             document.getElementById("txt_information").value = "";
+        }
+
+        function ConfirmDelete() {
+            if (confirm("คุณต้องการกดยืนยันใช่หรือไม่ ?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     </script>
 }

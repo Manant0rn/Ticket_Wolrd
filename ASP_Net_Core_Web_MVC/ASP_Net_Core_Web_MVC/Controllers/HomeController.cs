@@ -34,7 +34,7 @@ namespace ASP_Net_Core_Web_MVC.Controllers
                 client.BaseAddress = new Uri(Configuration["WebAPI:URL"]);
                 var response = client.GetStringAsync("/DataTicket").Result;
                 List<DataTicketModel> GetData = JsonConvert.DeserializeObject<List<DataTicketModel>>(response);
-                if(GetData == null)
+                if (GetData == null)
                 {
                     return NotFound();
                 }
@@ -109,6 +109,37 @@ namespace ASP_Net_Core_Web_MVC.Controllers
                     };
 
                     var response = client.PutAsJsonAsync("/DataTicket/" + editid, UpdateDataTicket).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(response.StatusCode.ToString(), response.ReasonPhrase);
+                    }
+
+                }
+                return View();
+            }
+            catch
+            {
+                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+        }
+
+        public IActionResult DeleteData(int id)
+        {
+            try
+            {
+                HttpClientHandler clientHandler = new HttpClientHandler();
+                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+                using (var client = new HttpClient(clientHandler))
+                {
+                    client.BaseAddress = new Uri(Configuration["WebAPI:URL"]);
+
+                    var response = client.DeleteAsync("/DataTicket/" + id).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
